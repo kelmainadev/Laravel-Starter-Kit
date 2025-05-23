@@ -1,23 +1,41 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useRef } from 'react';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Label } from '../../components/ui/label';
 import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 
 export default function Profile({ mustVerifyEmail, status }) {
     const { auth } = usePage().props;
+    const avatarInputRef = useRef(null);
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: auth.user.name,
         email: auth.user.email,
+        bio: auth.user.bio || '',
+        phone: auth.user.phone || '',
+        avatar: null,
     });
 
     const submit = (e) => {
         e.preventDefault();
         patch(route('profile.update'), {
             preserveScroll: true,
+            forceFormData: true, // This ensures file uploads work
         });
+    };
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setData('avatar', file);
+        }
+    };
+
+    const triggerAvatarUpload = () => {
+        avatarInputRef.current?.click();
     };
 
     return (
@@ -48,6 +66,50 @@ export default function Profile({ mustVerifyEmail, status }) {
                             </CardHeader>
                             <CardContent>
                                 <form onSubmit={submit} className="space-y-6">
+                                    {/* Avatar Section */}
+                                    <div className="space-y-2">
+                                        <Label>Profile Picture</Label>
+                                        <div className="flex items-center space-x-4">
+                                            <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                                {auth.user.avatar ? (
+                                                    <img 
+                                                        src={auth.user.avatar_url || auth.user.avatar} 
+                                                        alt={auth.user.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user.name)}&background=3B82F6&color=ffffff&size=200&font-size=0.6`}
+                                                        alt={auth.user.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                )}
+                                            </div>
+                                            <div>
+                                                <Button 
+                                                    type="button" 
+                                                    variant="outline" 
+                                                    onClick={triggerAvatarUpload}
+                                                >
+                                                    Change Avatar
+                                                </Button>
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    JPG, PNG or GIF. Max size 2MB.
+                                                </p>
+                                            </div>
+                                            <input
+                                                ref={avatarInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleAvatarChange}
+                                                className="hidden"
+                                            />
+                                        </div>
+                                        {errors.avatar && (
+                                            <p className="text-sm text-red-600">{errors.avatar}</p>
+                                        )}
+                                    </div>
+
                                     <div className="grid gap-2">
                                         <Label htmlFor="name">Name</Label>
                                         <Input
@@ -78,6 +140,37 @@ export default function Profile({ mustVerifyEmail, status }) {
                                         />
                                         {errors.email && (
                                             <p className="text-sm text-red-600">{errors.email}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="phone">Phone Number</Label>
+                                        <Input
+                                            id="phone"
+                                            type="tel"
+                                            className="mt-1 block w-full"
+                                            value={data.phone}
+                                            onChange={(e) => setData('phone', e.target.value)}
+                                            autoComplete="tel"
+                                            placeholder="Phone number"
+                                        />
+                                        {errors.phone && (
+                                            <p className="text-sm text-red-600">{errors.phone}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="bio">Bio</Label>
+                                        <Textarea
+                                            id="bio"
+                                            className="mt-1 block w-full"
+                                            value={data.bio}
+                                            onChange={(e) => setData('bio', e.target.value)}
+                                            placeholder="Tell us about yourself"
+                                            rows={4}
+                                        />
+                                        {errors.bio && (
+                                            <p className="text-sm text-red-600">{errors.bio}</p>
                                         )}
                                     </div>
 

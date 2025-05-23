@@ -29,16 +29,24 @@ export default function Dashboard({ auth, message, stats }) {
                                 <Card className="col-span-full">
                                     <CardHeader>
                                         <CardTitle className="text-2xl">Welcome back, {auth.user.name}!</CardTitle>
-                                        <CardDescription>
-                                            {message || "Here's your personal dashboard with an overview of your activity."}
-                                        </CardDescription>
+                                        <CardDescription>{message}</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <div className="flex items-center space-x-4">
-                                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
+                                            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                                {auth.user.avatar ? (
+                                                    <img 
+                                                        src={auth.user.avatar_url || auth.user.avatar} 
+                                                        alt={auth.user.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user.name)}&background=3B82F6&color=ffffff&size=200&font-size=0.6`}
+                                                        alt={auth.user.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                )}
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-600">User ID: {auth.user.id}</p>
@@ -73,8 +81,8 @@ export default function Dashboard({ auth, message, stats }) {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">{stats?.posts_created || 0}</div>
-                                        <p className="text-xs text-muted-foreground">Posts you've published</p>
+                                        <div className="text-2xl font-bold">{stats?.posts?.total || 0}</div>
+                                        <p className="text-xs text-muted-foreground">Total posts you've created</p>
                                     </CardContent>
                                 </Card>
 
@@ -87,7 +95,7 @@ export default function Dashboard({ auth, message, stats }) {
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-2xl font-bold">
-                                            {stats?.profile_completion || '85'}%
+                                            {stats?.profile_completion || '0'}%
                                         </div>
                                         <p className="text-xs text-muted-foreground">Profile completion rate</p>
                                     </CardContent>

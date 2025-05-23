@@ -1,10 +1,10 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 
-export default function SuperadminDashboard({ auth, message, stats }) {
+export default function SuperadminDashboard({ auth, message, stats, recentActivities, systemHealth }) {
     return (
         <AuthenticatedLayout
             header={
@@ -58,7 +58,7 @@ export default function SuperadminDashboard({ auth, message, stats }) {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">{stats?.total_workspaces || 1}</div>
+                                        <div className="text-2xl font-bold">{stats?.workspaces || '1'}</div>
                                         <p className="text-xs text-muted-foreground">Active workspaces</p>
                                     </CardContent>
                                 </Card>
@@ -71,7 +71,7 @@ export default function SuperadminDashboard({ auth, message, stats }) {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">{stats?.platform_users || 0}</div>
+                                        <div className="text-2xl font-bold">{stats?.users?.total || '0'}</div>
                                         <p className="text-xs text-muted-foreground">Total registered users</p>
                                     </CardContent>
                                 </Card>
@@ -84,7 +84,7 @@ export default function SuperadminDashboard({ auth, message, stats }) {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-green-600">{stats?.system_health || '99.9'}%</div>
+                                        <div className="text-2xl font-bold text-green-600">{stats?.system?.uptime || '99.9%'}</div>
                                         <p className="text-xs text-muted-foreground">Uptime status</p>
                                     </CardContent>
                                 </Card>
@@ -97,7 +97,7 @@ export default function SuperadminDashboard({ auth, message, stats }) {
                                         </svg>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">${stats?.revenue || '0'}</div>
+                                        <div className="text-2xl font-bold">${stats?.revenue?.monthly || '0'}</div>
                                         <p className="text-xs text-muted-foreground">Monthly recurring revenue</p>
                                     </CardContent>
                                 </Card>
@@ -111,67 +111,83 @@ export default function SuperadminDashboard({ auth, message, stats }) {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                            <span className="text-sm">Manage Workspaces</span>
-                                        </Button>
+                                        <Link href={route('superadmin.workspaces.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                                <span className="text-sm">Manage Workspaces</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                            </svg>
-                                            <span className="text-sm">System Health</span>
-                                        </Button>
+                                        <Link href={route('superadmin.system-health.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                </svg>
+                                                <span className="text-sm">System Health</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                                            </svg>
-                                            <span className="text-sm">Billing Overview</span>
-                                        </Button>
+                                        <Link href={route('superadmin.billing.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                                                </svg>
+                                                <span className="text-sm">Billing Overview</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                            <span className="text-sm">Audit Logs</span>
-                                        </Button>
+                                        <Link href={route('superadmin.audit-logs.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                <span className="text-sm">Audit Logs</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                                            </svg>
-                                            <span className="text-sm">All Users</span>
-                                        </Button>
+                                        <Link href={route('superadmin.users.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                                                </svg>
+                                                <span className="text-sm">All Users</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                            <span className="text-sm">Platform Settings</span>
-                                        </Button>
+                                        <Link href={route('superadmin.settings.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <span className="text-sm">Platform Settings</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4h10M7 4l-2 16h14L17 4M9 8v8m6-8v8" />
-                                            </svg>
-                                            <span className="text-sm">Feature Flags</span>
-                                        </Button>
+                                        <Link href={route('superadmin.feature-flags.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4h10M7 4l-2 16h14L17 4M9 8v8m6-8v8" />
+                                                </svg>
+                                                <span className="text-sm">Feature Flags</span>
+                                            </Button>
+                                        </Link>
                                         
-                                        <Button variant="outline" className="h-20 flex flex-col space-y-2">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                            </svg>
-                                            <span className="text-sm">Performance</span>
-                                        </Button>
+                                        <Link href={route('superadmin.performance.index')}>
+                                            <Button variant="outline" className="h-20 flex flex-col space-y-2 w-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                </svg>
+                                                <span className="text-sm">Performance</span>
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            {/* Superadmin Capabilities */}
+                            {/* Superadmin Capabilities and System Monitoring */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <Card>
                                     <CardHeader>
@@ -215,41 +231,47 @@ export default function SuperadminDashboard({ auth, message, stats }) {
                                     </CardHeader>
                                     <CardContent>
                                         <div className="space-y-4">
-                                            <div className="flex items-center space-x-4">
-                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">Database: Operational</p>
-                                                    <p className="text-xs text-gray-500">99.9% uptime, optimal performance</p>
+                                            {systemHealth && Object.entries(systemHealth).map(([key, health]) => (
+                                                <div key={key} className="flex items-center space-x-4">
+                                                    <div className={`w-2 h-2 rounded-full ${
+                                                        health.status === 'healthy' ? 'bg-green-500' : 
+                                                        health.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                                                    }`}></div>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-medium capitalize">{key}: {health.status}</p>
+                                                        <p className="text-xs text-gray-500">{health.message}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            
-                                            <div className="flex items-center space-x-4">
-                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">Queue Processing: Active</p>
-                                                    <p className="text-xs text-gray-500">All background jobs running smoothly</p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="flex items-center space-x-4">
-                                                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">Storage: 78% Used</p>
-                                                    <p className="text-xs text-gray-500">Monitor disk usage regularly</p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="flex items-center space-x-4">
-                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">Security: All Clear</p>
-                                                    <p className="text-xs text-gray-500">No security incidents detected</p>
-                                                </div>
-                                            </div>
+                                            ))}
                                         </div>
                                     </CardContent>
                                 </Card>
                             </div>
+
+                            {/* Recent Activities */}
+                            {recentActivities && recentActivities.length > 0 && (
+                                <Card className="mt-6">
+                                    <CardHeader>
+                                        <CardTitle>Recent Platform Activities</CardTitle>
+                                        <CardDescription>Latest actions across the platform</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-4">
+                                            {recentActivities.slice(0, 5).map((activity, index) => (
+                                                <div key={index} className="flex items-center space-x-4">
+                                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-medium">{activity.description}</p>
+                                                        <p className="text-xs text-gray-500">
+                                                            by {activity.user} • {new Date(activity.timestamp).toLocaleDateString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )}
                         </div>
                     </div>
                 </div>

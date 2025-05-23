@@ -30,6 +30,9 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
+        'avatar',
+        'bio',
+        'phone',
     ];
 
     /**
@@ -89,6 +92,70 @@ class User extends Authenticatable
     public function moderatedPosts()
     {
         return $this->hasMany(Post::class, 'moderated_by');
+    }
+
+    /**
+     * Get the user's avatar URL with fallback to default.
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar) {
+            // If avatar is a full URL, return as is
+            if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+                return $this->avatar;
+            }
+            // If avatar is a file path, prepend storage URL
+            return asset('storage/' . $this->avatar);
+        }
+        
+        // Return default avatar based on user initials
+        return $this->getDefaultAvatarUrl();
+    }
+
+    /**
+     * Get default avatar URL using initials.
+     */
+    public function getDefaultAvatarUrl()
+    {
+        $initials = $this->getInitials();
+        $backgroundColor = $this->getAvatarBackgroundColor();
+        
+        // Using a service like UI Avatars or similar
+        return "https://ui-avatars.com/api/?name=" . urlencode($initials) . 
+               "&background=" . $backgroundColor . 
+               "&color=ffffff&size=200&font-size=0.6";
+    }
+
+    /**
+     * Get user initials.
+     */
+    public function getInitials()
+    {
+        $words = explode(' ', trim($this->name));
+        $initials = '';
+        
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $initials .= strtoupper(substr($word, 0, 1));
+                if (strlen($initials) >= 2) break;
+            }
+        }
+        
+        return $initials ?: 'U';
+    }
+
+    /**
+     * Get a consistent background color for the user's avatar.
+     */
+    private function getAvatarBackgroundColor()
+    {
+        $colors = [
+            '3B82F6', '8B5CF6', 'EF4444', 'F59E0B', 
+            '10B981', 'F97316', '06B6D4', 'EC4899'
+        ];
+        
+        $index = abs(crc32($this->email)) % count($colors);
+        return $colors[$index];
     }
 
     // Task and Project relationships

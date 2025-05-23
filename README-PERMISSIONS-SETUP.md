@@ -62,7 +62,7 @@ php artisan tinker --execute="App\Models\User::with('roles')->get(['id','name','
 
 | Email | Password | Role | Status |
 |-------|----------|------|--------|
-| `super@admin.com` | `password` | Superadmin | Active |
+| `super@admin.` | `password` | Superadmin | Active |
 | `admin@example.com` | `password` | Admin | Active |
 | `user@example.com` | `password` | User | Active |
 
@@ -84,7 +84,7 @@ Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
 });
 
 // Permission-based
-Route::middleware(['auth', 'permission:manage users'])->group(function () {
+Route::midcomdleware(['auth', 'permission:manage users'])->group(function () {
     Route::post('/users/{user}/suspend', [UserController::class, 'suspend']);
 });
 

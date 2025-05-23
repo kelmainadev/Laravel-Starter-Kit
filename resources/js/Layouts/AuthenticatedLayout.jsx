@@ -81,6 +81,24 @@ export default function AuthenticatedLayout({ header, children }) {
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
                             <div className="flex items-center space-x-4">
                                 <NotificationCenter user={auth?.user} />
+                                
+                                {/* User Avatar */}
+                                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                    {auth?.user?.avatar ? (
+                                        <img 
+                                            src={auth.user.avatar_url || auth.user.avatar} 
+                                            alt={auth.user.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <img 
+                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth?.user?.name || 'User')}&background=3B82F6&color=ffffff&size=200&font-size=0.6`}
+                                            alt={auth?.user?.name || 'User'}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    )}
+                                </div>
+                                
                                 <Badge variant={getRoleColor(userRole)}>
                                     {userRole ? userRole.toUpperCase() : 'USER'}
                                 </Badge>
@@ -137,11 +155,31 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
                         <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{auth?.user?.name || 'User'}</div>
-                            <div className="font-medium text-sm text-gray-500">{auth?.user?.email || ''}</div>
-                            <Badge variant={getRoleColor(userRole)} className="mt-2">
-                                {userRole ? userRole.toUpperCase() : 'USER'}
-                            </Badge>
+                            <div className="flex items-center space-x-3">
+                                {/* User Avatar */}
+                                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                                    {auth?.user?.avatar ? (
+                                        <img 
+                                            src={auth.user.avatar_url || auth.user.avatar} 
+                                            alt={auth.user.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <img 
+                                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(auth?.user?.name || 'User')}&background=3B82F6&color=ffffff&size=200&font-size=0.6`}
+                                            alt={auth?.user?.name || 'User'}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    )}
+                                </div>
+                                <div>
+                                    <div className="font-medium text-base text-gray-800">{auth?.user?.name || 'User'}</div>
+                                    <div className="font-medium text-sm text-gray-500">{auth?.user?.email || ''}</div>
+                                    <Badge variant={getRoleColor(userRole)} className="mt-2">
+                                        {userRole ? userRole.toUpperCase() : 'USER'}
+                                    </Badge>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="mt-3 space-y-1">

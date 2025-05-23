@@ -35,7 +35,7 @@ class SuperadminDashboardController extends Controller
                 'posts' => Post::count(),
                 'active_projects' => Project::where('status', Project::STATUS_ACTIVE)->count(),
                 'completed_projects' => Project::where('status', Project::STATUS_COMPLETED)->count(),
-                'pending_tasks' => Task::where('status', Task::STATUS_PENDING)->count(),
+                'pending_tasks' => Task::where('status', Task::STATUS_TODO)->count(),
                 'completed_tasks' => Task::where('status', Task::STATUS_COMPLETED)->count(),
                 'published_posts' => Post::where('status', Post::STATUS_PUBLISHED)->count(),
                 'draft_posts' => Post::where('status', Post::STATUS_DRAFT)->count(),
